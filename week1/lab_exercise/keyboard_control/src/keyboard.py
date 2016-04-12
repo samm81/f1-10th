@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import rospy
-from race.msg import drive_param # import the custom message
+from keyboard_control.msg import drive_param # import the custom message
 import curses
 forward = 0;
 left = 0;

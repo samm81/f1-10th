@@ -1,8 +1,8 @@
 #!/usr/bin/env python
 
 import rospy
-from race.msg import drive_values
-from race.msg import drive_param
+from keyboard_control.msg import drive_values
+from keyboard_control.msg import drive_param
 from std_msgs.msg import Bool
 
 
