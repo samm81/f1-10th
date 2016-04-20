@@ -18,13 +18,22 @@ def control(data):
 	global kp
 	global kd
 
+	pid_error = data[0]
 	## Your code goes here
 	# 1. Scale the error
 	# 2. Apply the PID equation on error
 	# 3. Make sure the error is within bounds
- 	
+	error = pid_error * kp
+	errordot = kd * (pid_error - prev_error)
 
-	## END
+	angle = error + errordot
+
+	if angle > (math.pi / 4):
+		angle = math.pi / 4
+	elif angle < -(math.pi / 4):
+		angle = -(math.pi / 4)
+
+	prev_error = pid_error
 
 	msg = drive_param();
 	msg.velocity = vel_input	
@@ -36,9 +45,9 @@ if __name__ == '__main__':
 	global kd
 	global vel_input
 	print("Listening to error for PID")
-	kp = input("Enter Kp Value: ")
-	kd = input("Enter Kd Value: ")
-	vel_input = input("Enter Velocity: ")
+	#kp = input("Enter Kp Value: ")
+	#kd = input("Enter Kd Value: ")
+	#vel_input = input("Enter Velocity: ")
 	rospy.init_node('pid_controller', anonymous=True)
 	rospy.Subscriber("error", pid_input, control)
 	rospy.spin()
