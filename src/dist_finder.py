@@ -37,7 +37,11 @@ def callback(data):
     alpha = math.atan2( a * math.cos(swing) - b , a * math.sin(swing) )
     AB = b * math.cos(alpha)
 
-    error = AB - desired_trajectory
+    AC = 1
+    CD = AB + AC * math.sin(alpha)
+
+    #error = AB - desired_trajectory
+    error = CD - desired_trajectory
 
     #ABprime = a * math.cos(math.asin(a * math.sin(swing) / math.sqrt(a*a + b*b - 2*a*b*math.cos(swing))) - math.pi / 2 + swing)
 
