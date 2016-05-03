@@ -10,13 +10,13 @@ vel = 5
 
 pub = rospy.Publisher('error', pid_input, queue_size=10)
 
-## Input: data: Lidar scan data
-## theta: The angle at which the distance is requried
-## OUTPUT: distance of scan at angle theta
-def getRange(data,theta):
+def getRange(data, theta):
     """ Find the index of the arary that corresponds to angle theta.
     Return the lidar scan value at that index
-    Do some error checking for NaN and absurd values """
+    Do some error checking for NaN and absurd values
+	data: the LidarScan data
+	theta: the angle to return the distance for
+	"""
     car_theta = math.radians(theta) - math.pi / 2
     if car_theta > 3 * math.pi / 4:
         car_theta = 3 * math.pi / 4

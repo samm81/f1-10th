@@ -3,65 +3,59 @@
 import rospy
 from race.msg import drive_param
 from race.msg import pid_input
+from std_msgs.msg import String
 import math
-
-kp = 14.0
-kd = 0.09
-servo_offset = 18.5
-prev_error = 0.0 
-vel_input = 10.0
-pwm_tick = 0
-pwm_freq = 4
 
 pub = rospy.Publisher('drive_parameters', drive_param, queue_size=1)
 
+kp = 14.0 * 2
+kd = 0.09 * 2
+servo_offset = 18.5
+prev_error = 0.0 
+vel_input = 10.0
+mode = 'wall'
+
 def control(data):
-	global prev_error
-	global vel_input
-	global kp
-	global kd
-	global pwm_tick
-	global pwm_freq
+    global kp
+    global kd
+    global servo_offset
+    global prev_error
+    global vel_input
+    global wall
 
-	pid_error = data.pid_error
-	## Your code goes here
-	# 1. Scale the error
-	# 2. Apply the PID equation on error
-	# 3. Make sure the error is within bounds
-	error = pid_error * kp
-	errordot = kd * (pid_error - prev_error)
+    msg = drive_param();
+        msg.velocity = vel_input
 
-	angle = error + errordot
+    if mode == 'wall':
+        pid_error = data.pid_error
+        error = pid_error * kp
+        errordot = kd * (pid_error - prev_error)
 
-	if angle > 100:
-		angle = 100
-	elif angle < -100:
-		angle = -100
+        angle = error + errordot
 
-	prev_error = pid_error
+        if angle > 100:
+            angle = 100
+        elif angle < -100:
+            angle = -100
 
-	print "pid_error {}\nangle {}".format(pid_error, angle)
-	
-	vel = vel_input
-	if pwm_tick is pwm_freq:
-		pwm_tick = 0
-		#vel = 0
-	else:
-		pwm_tick += 1
+        prev_error = pid_error
 
-	msg = drive_param();
-	msg.velocity = vel
-	msg.angle = angle
-	pub.publish(msg)
+        print 'pid_error {}\nangle {}'.format(pid_error, angle)
+
+        msg.angle = angle
+
+    elif mode == 'corner':
+        msg.angle = 100
+        print 'wall mode, angle 100'
+    
+    pub.publish(msg)
+
+def update_mode(_mode):
+    mode = _mode
 
 if __name__ == '__main__':
-	global kp
-	global kd
-	global vel_input
-	print("Listening to error for PID")
-	#kp = input("Enter Kp Value: ")
-	#kd = input("Enter Kd Value: ")
-	#vel_input = input("Enter Velocity: ")
-	rospy.init_node('pid_controller', anonymous=True)
-	rospy.Subscriber("error", pid_input, control)
-	rospy.spin()
+    print("Listening to error for PID")
+    rospy.init_node('pid_controller', anonymous=True)
+    rospy.Subscriber('error', pid_input, control)
+    rospy.Subscriber('mode', String, update_mode)
+    rospy.spin()
