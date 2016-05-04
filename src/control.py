@@ -24,7 +24,7 @@ def control(data):
     global wall
 
     msg = drive_param();
-        msg.velocity = vel_input
+    msg.velocity = vel_input
 
     if mode == 'wall':
         pid_error = data.pid_error
