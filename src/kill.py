@@ -16,10 +16,10 @@ key = ''
 while key != ord('q'):
 	key = stdscr.getch()
 	stdscr.refresh()
-	if key == curses.KEY_DC:
+	if key == ord(' '):
 		em_pub.publish(True)
 		stdscr.addstr(5, 20, "Emergency STOP!!!!!")
-	elif key == curses.KEY_HOME:
+	elif key == ord('\\'):
 		em_pub.publish(False)
 		stdscr.addstr(5, 20, "Normal Operation :)")
 

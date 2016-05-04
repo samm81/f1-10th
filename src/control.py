@@ -21,7 +21,7 @@ def control(data):
     global servo_offset
     global prev_error
     global vel_input
-    global wall
+    global mode
 
     msg = drive_param();
     msg.velocity = vel_input
@@ -43,15 +43,16 @@ def control(data):
         print 'pid_error {}\nangle {}'.format(pid_error, angle)
 
         msg.angle = angle
-
+        
     elif mode == 'corner':
+        print 'corner mode, angle 100'
         msg.angle = 100
-        print 'wall mode, angle 100'
     
     pub.publish(msg)
 
 def update_mode(_mode):
-    mode = _mode
+    global mode
+    mode = _mode.data
 
 if __name__ == '__main__':
     print("Listening to error for PID")

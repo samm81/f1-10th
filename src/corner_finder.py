@@ -27,18 +27,19 @@ def getRange(data, theta):
     return data.ranges[index]
 
 def process_scan(scan_data):
-    global wall
+    global state
 
-    curr_range = getRange(scan_data, 50)
+    curr_range = getRange(scan_data, 45)
 
     if state == 'wall':
-        if curr_range > 10 and abs(curr_range - prev_range) > 5:
+        if curr_range > 3 and abs(curr_range - prev_range) > 1.5:
             state = 'corner'
             pub.publish(state)
     elif state == 'corner':
-        if curr_range < 3:
+        if curr_range < 1:
             state = 'wall'
             pub.publish(state)
+    print(state)
 
 if __name__ == '__main__':
     print('corner finding started')
